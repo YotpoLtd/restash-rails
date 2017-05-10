@@ -10,7 +10,7 @@ module ActionDispatch
             request_method: env['REQUEST_METHOD'],
             request_path: env['REQUEST_PATH'],
             response_code: wrapper.status_code,
-            tag: :action_controller,
+            log_tag: :action_controller,
             exception: { class: exception.class.name, message: exception.message }
         }
         ::RestashRails.logger.warn(message)

@@ -11,7 +11,7 @@ module RestashRails
             log_message: 'Failed to format logstash message',
             exception: { class: e.class, message: e.message },
             logstash_message: log_message,
-            tag: :logstash_formatter_failed
+            log_tag: :logstash_formatter_failed
         }
       end
     end

@@ -14,7 +14,7 @@ module RestashRails
             to: event.payload[:to],
             duration: event.duration.round(2),
             action: action,
-            tag: :action_mailer
+            log_tag: :action_mailer
         }
 
       end

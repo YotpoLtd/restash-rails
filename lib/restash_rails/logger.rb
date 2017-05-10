@@ -64,7 +64,7 @@ module RestashRails
       log_message[:rails_env] = environment
       log_message.merge!(formatter.format_message(message))
       log_message = log_message.with_indifferent_access
-      log_message[:tag] ||= :custom
+      log_message[:log_tag] ||= :custom
       write(log_message)
     end
 

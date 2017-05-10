@@ -12,7 +12,7 @@ module Resque
               worker: worker.to_s,
               queue: queue,
               extra_data: payload,
-              tag: :resque_failure
+              log_tag: :resque_failure
           }
           ::Rails.logger.error(message)
         rescue => e

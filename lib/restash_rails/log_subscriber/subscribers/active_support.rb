@@ -65,7 +65,7 @@ module RestashRails
             redirect_to: payload[:location] || '',
             db_duration: ((payload[:db_runtime] * 100).round(2)/100.0 rescue 0.0),
             view_duration: ((payload[:view_runtime] * 100).round(2)/100.0 rescue 0.0),
-            tag: :action_controller,
+            log_tag: :action_controller,
             exception: exception_formatter(payload)
         }
       end

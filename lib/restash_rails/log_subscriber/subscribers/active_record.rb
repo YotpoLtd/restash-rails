@@ -14,7 +14,7 @@ module RestashRails
             sql: event.payload[:sql].to_s,
             duration: event.duration.round(2),
             name: event.payload[:name],
-            tag: :active_record
+            log_tag: :active_record
         }
       end
     end

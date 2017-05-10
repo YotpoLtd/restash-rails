@@ -25,7 +25,7 @@ module Resque
       end
 
       def log(status, args, severity = :info)
-        log_arguments = { status: status, extra_data: args, class: self.name, tag: :resque_hooks }
+        log_arguments = { status: status, extra_data: args, class: self.name, log_tag: :resque_hooks }
         if args.is_a?(Array) && args[0].is_a?(Exception)
           exception = args.shift
           log_arguments[:exception] = { class: exception.class, message: exception.message, backtrace: exception.backtrace }

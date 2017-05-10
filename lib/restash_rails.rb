@@ -20,7 +20,7 @@ module RestashRails
       configs = configs.with_indifferent_access
       return unless is_true?(configs[:enabled])
       subscribe_logs(configs)
-      disable_additional_logs
+      disable_additional_logs unless configs[:additional_log] == true
       add_exception_statuses(configs[:exception_statuses] || [])
       @@logger = RestashRails::Logger.new(configs)
       @@logger

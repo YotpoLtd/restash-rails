@@ -54,7 +54,7 @@ module RestashRails
             host: payload[:host],
             port: payload[:port],
             expire_in: payload[:expire_in],
-            tag: :cache
+            log_tag: :cache
         }
         message.merge(exception_formatter(payload))
       end

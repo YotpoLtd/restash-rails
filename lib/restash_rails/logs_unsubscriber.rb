@@ -3,11 +3,11 @@ require 'action_controller/log_subscriber'
 require 'active_support/core_ext/module/attribute_accessors'
 require 'active_support/core_ext/string/inflections'
 require 'active_support/ordered_options'
-require 'restash_rails/rails_ext/rack/logger'
 
 module RestashRails
   module LogsUnsubscriber
     def disable_additional_logs
+      remove_start_get_lines
       disable_rack_cache_verbose_output(Rails.application) if defined?(Rails)
       ::ActiveSupport::LogSubscriber.log_subscribers.each do |subscriber|
         case subscriber.class.name
@@ -42,6 +42,10 @@ module RestashRails
 
     def disable_rack_cache_verbose_output(app)
       app.config.action_dispatch.rack_cache[:verbose] = false if rack_cache_hashlike?(app)
+    end
+
+    def remove_start_get_lines
+      require 'restash_rails/rails_ext/rack/logger'
     end
   end
 end

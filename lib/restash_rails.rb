@@ -6,7 +6,6 @@ require 'restash_rails/logs_unsubscriber'
 require 'restash_rails/log_subscriber/log_subscriber'
 require 'restash_rails/formatters/default'
 require 'restash_rails/railtie' if defined?(Rails::Railtie)
-require 'restash_rails/rails_ext/rack/logger'
 require 'restash_rails/rails_ext/core_ext/hash'
 
 module RestashRails

@@ -24,8 +24,8 @@ module Resque
         log 'Scheduled', args
       end
 
-      def log(status, args, severity = :info)
-        log_arguments = { status: status, extra_data: args, class: self.name, log_tag: :resque_hooks }
+      def log(log_message, args, severity = :info)
+        log_arguments = { log_message: log_message, extra_data: args, class: self.name, log_tag: :resque_hooks }
         if args.is_a?(Array) && args[0].is_a?(Exception)
           exception = args.shift
           log_arguments[:exception] = { class: exception.class, message: exception.message, backtrace: exception.backtrace }

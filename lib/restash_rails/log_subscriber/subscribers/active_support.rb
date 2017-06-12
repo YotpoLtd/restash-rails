@@ -8,7 +8,7 @@ module RestashRails
         log_message = generate_message(event)
         if log_message[:response_code] >= 500
           logger.error(log_message)
-        elsif log_message[:response_code] >= 300
+        elsif log_message[:response_code] >= 400
           logger.warn(log_message)
         else
           logger.info(log_message)
@@ -27,9 +27,13 @@ module RestashRails
       private
 
       def exception_formatter(payload)
-        return {} if payload[:exception].nil?
-        exception = payload[:exception]
-        { class: exception.class, message: exception.message, backtrace: exception.backtrace }
+        return {} unless payload[:exception].present?
+        if exception.is_a?(Array)
+          exception_class, exception_message = payload[:exception]
+          { class: exception_class, message: exception_message }
+        else
+          { exception_string: payload[:exception].to_s }
+        end
       end
 
 

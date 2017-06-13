@@ -28,7 +28,7 @@ module RestashRails
 
       def exception_formatter(payload)
         return {} unless payload[:exception].present?
-        if exception.is_a?(Array)
+        if payload[:exception].is_a?(Array)
           exception_class, exception_message = payload[:exception]
           { class: exception_class, message: exception_message }
         else

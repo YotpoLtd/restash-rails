@@ -64,7 +64,7 @@ module RestashRails
             response_code: extract_status(payload),
             path: payload[:path].to_s,
             format: payload[:format].to_s,
-            request_params: (payload[:params].except(*excepted_params) rescue {}),
+            request_params: (payload[:params].except(*excepted_params).to_json rescue 'failed to jsonify request_params'),
             duration: event.duration.to_f.round(2),
             redirect_to: payload[:location] || '',
             db_duration: ((payload[:db_runtime] * 100).round(2)/100.0 rescue 0.0),

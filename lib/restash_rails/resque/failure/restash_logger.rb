@@ -5,7 +5,7 @@ module Resque
         begin
           message = {
               exception: {
-                  class: exception.class,
+                  class: exception.class.to_s,
                   message: exception.message,
                   backtrace: exception.backtrace
               },

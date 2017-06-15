@@ -6,7 +6,7 @@ module Resque
           message = {
               exception: {
                   class: exception.class.to_s,
-                  message: exception.message,
+                  message: exception.message.to_s,
                   backtrace: exception.backtrace
               },
               worker: worker.to_s,

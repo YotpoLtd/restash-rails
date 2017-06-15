@@ -28,7 +28,7 @@ module Resque
         log_arguments = { log_message: log_message, extra_data: args, class: self.name, log_tag: :resque_hooks }
         if args.is_a?(Array) && args[0].is_a?(Exception)
           exception = args.shift
-          log_arguments[:exception] = { class: exception.class, message: exception.message, backtrace: exception.backtrace }
+          log_arguments[:exception] = { class: exception.class.to_s, message: exception.message.to_s, backtrace: exception.backtrace }
         end
         log_arguments[:resque_job_uuid] = @resque_job_uuid if @resque_job_uuid.present?
         Rails.logger.send(severity, log_arguments)

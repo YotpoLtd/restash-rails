@@ -40,7 +40,7 @@ module RestashRails
 
       def log(event)
         message = generate_message(event)
-        (duration > 100) ?
+        (message[:duration] > 100) ?
             logger.debug(message.merge({ execution: 'slow' })) :
             logger.debug(message)
       end
@@ -49,7 +49,7 @@ module RestashRails
         payload = event.payload
         message = {
             name: event.name,
-            duration: event.duration,
+            duration: event.duration || 0,
             cache_key: payload[:key],
             host: payload[:host],
             port: payload[:port],

@@ -4,14 +4,17 @@ module Resque
       # Executed on the Resque worker
       def before_perform_logstash_logger(*args)
         @resque_job_uuid = SecureRandom.uuid
+        @job_start_time = Time.now
         log 'Executing', args
       end
 
       def after_perform_logstash_logger(*args)
+        @job_end_time = Time.now
         log 'Finished', args
       end
 
       def on_failure_logstash_logger(*args)
+        @job_end_time = Time.now
         log 'Failed', args, :error
       end
 
@@ -30,6 +33,7 @@ module Resque
           exception = args.shift
           log_arguments[:exception] = { class: exception.class.to_s, message: exception.message.to_s, backtrace: exception.backtrace }
         end
+        log_arguments[:exec_run_time] = @job_end_time - @job_start_time if @job_start_time.present? && @job_end_time.present?
         log_arguments[:resque_job_uuid] = @resque_job_uuid if @resque_job_uuid.present?
         Rails.logger.send(severity, log_arguments)
       end

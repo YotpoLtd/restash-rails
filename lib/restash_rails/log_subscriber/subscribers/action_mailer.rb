@@ -16,7 +16,6 @@ module RestashRails
             action: action,
             log_tag: :action_mailer
         }
-
       end
     end
   end

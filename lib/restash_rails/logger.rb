@@ -3,7 +3,7 @@ require 'tcp_timeout'
 module RestashRails
   class Logger
     include ::Logger::Severity
-    attr_accessor :app_name, :level, :outputter, :formatter, :logstash_host, :logstash_port, :timeout_options
+    attr_accessor :app_name, :level, :outputter, :formatter, :writer
     DEFAULT_TIMEOUT = 0.010
 
     def initialize(configs)
@@ -19,6 +19,7 @@ module RestashRails
         @timeout_options = { connect_timeout: DEFAULT_TIMEOUT, write_timeout: DEFAULT_TIMEOUT, read_timeout: DEFAULT_TIMEOUT }
       end
       set_formatter(configs)
+      set_writer(configs)
     end
 
     ::Logger::Severity.constants.each do |severity|
@@ -51,8 +52,15 @@ module RestashRails
     private
 
     def set_formatter(configs)
-      formatter_name = configs[:formatter] || Formatter::Default
-      @formatter = formatter_name.new
+      @formatter = ("Writer::#{configs[:formatter].to_s.capitalize}".safe_constantize || Formatter::Default).new(configs)
+    rescue
+      @formatter = Formatter::Default.new(configs)
+    end
+
+    def set_writer(configs)
+      @writer = ("Writer::#{configs[:writer].to_s.capitalize}".safe_constantize || Writer::Tcp).new(configs)
+    rescue
+      @writer = Writer::Tcp.new(configs)
     end
 
     def log(severity, message = nil)

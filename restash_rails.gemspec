@@ -6,8 +6,8 @@ require 'restash_rails/version'
 Gem::Specification.new do |spec|
   spec.name          = 'restash_rails'
   spec.version       = RestashRails::VERSION
-  spec.authors       = ['dmitri86git']
-  spec.email         = ['dmitri@yotpo.com']
+  spec.authors       = ['dmitri86git', 'Ariel Cabib', 'Vladislav Shub']
+  spec.email         = ['rubygems@yotpo.com']
 
   spec.summary       = 'This gem sends your Rails application logs to logstash.'
   spec.description   = 'Add configurations to application.config.restash_rails and  have fun.'

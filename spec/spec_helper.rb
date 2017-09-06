@@ -1,4 +1,5 @@
 require "bundler/setup"
+require 'action_dispatch'
 require "restash_rails"
 
 RSpec.configure do |config|

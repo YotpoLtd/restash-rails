@@ -1,5 +1,14 @@
 sudo: false
 language: ruby
 rvm:
-  - 2.4.0
-before_install: gem install bundler -v 1.14.5
+- 2.4
+before_install: gem install bundler
+deploy:
+  provider: rubygems
+  api_key:
+    secure: qs/Ss9SJXZWG+ScR0hmjUAyQEq5+e/xq0Pp+ppeGtItpL577s40NWcGsX+F/oxWLu6GK+T6pOCxQmU43ezOAjC96lXJpnfY3FFR+F4CJcOE+K+I2W67JZeaXHsAXOhOIh3wLrevsoAJkMpps+GrY907dUQWIdbNSsu0yk1LCew1r7Alz3ziEz7vCJ6XBwIW3TrF+Xx8o+JB7Y3shPCzGFrZ+PTSnE4Qgp/SwsVcsKrAaxsb4EKOB/UKR6Ph3bHrs7zEeoIY/nUjOKM077aNcVifgynhc3BZNTe3TsOssNS7MeMk19tThOE5opiNhz5fPc6tEjgIQXvwrYnQhiwQ4MhTxZuCduPVGVvsCoxgEH0WFjyDBwDNrTBpBo8fBahGljqqjdtVoPXQ305s5Vo5yG3juvr5E9bXyY8OB7NpRMRXWp4AmPGL0x6SFGPguW22tG8xKrn6wKalrbBG3dwJVt6AVq6xgZyGSh70iMCTVESk5J/yI9wlrWE+4+UsCYNMkGPQQaUE13/ehLSovdZA5fNTWcG7uYiIBX88MnhUBh+KSuMkv10r3aexilU228xUnZKzwQv+FaGvUerekpsiiq4dthQaWXnnvx/QtmwXIGHulCUZgB3Ou2fiS8Td2cobIu9777VyfTWuoqqDZjHxOp8a8sI6ylV20oQdefnuQiNk=
+  gem: restash_rails
+  on:
+    rvm: 2.4
+    branch: master
+    repo: YotpoLtd/restash-rails

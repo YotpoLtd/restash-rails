@@ -3,7 +3,7 @@ require 'tcp_timeout'
 module RestashRails
   class Logger
     include ::Logger::Severity
-    attr_accessor :app_name, :level, :outputter, :formatter, :logstash_host, :logstash_port, :timeout_options
+    attr_accessor :app_name, :level, :outputter, :formatter, :logstash_host, :logstash_port, :timeout_options, :output_type
     DEFAULT_TIMEOUT = 0.010
 
     def initialize(configs)
@@ -11,6 +11,7 @@ module RestashRails
       @logstash_host = configs[:host] || '127.0.0.1' #logstash host
       @logstash_port = configs[:port].to_i || 5960 #logstash port
       @app_name = configs[:app_name] || ENV['APP_NAME'] || Rails.application.class.name
+      @output_type = configs[:output_type] || 'tcp'
       #TCP connection timeouts in milliseconds
       if configs[:timeout_options].present?
         configs[:timeout_options].each{ |k,v| configs[:timeout_options][k] = v.to_f }
@@ -19,6 +20,7 @@ module RestashRails
         @timeout_options = { connect_timeout: DEFAULT_TIMEOUT, write_timeout: DEFAULT_TIMEOUT, read_timeout: DEFAULT_TIMEOUT }
       end
       set_formatter(configs)
+      @stdout_logger = ::Logger.new(STDOUT)
     end
 
     ::Logger::Severity.constants.each do |severity|
@@ -75,12 +77,24 @@ module RestashRails
 
     def write(data)
       json_data = data.to_json
+      case @output_type.downcase
+        when 'tcp'
+          write_to_tcp(json_data)
+        when 'stdout'
+          write_to_stdout(json_data, data[:severity].downcase)
+      end
+    rescue => e
+      @stdout_logger.error({ status: "Failed to write data to #{logstash_host}:#{logstash_port}",  exception: e, data: data })
+    end
+
+    def write_to_stdout(json_data, severity)
+      @stdout_logger.send(severity, json_data)
+    end
+
+    def write_to_tcp(json_data)
       sock = ::TCPTimeout::TCPSocket.new(logstash_host, logstash_port, timeout_options)
       sock.write(json_data)
       sock.close
-    rescue => e
-      failures_logger = ::Logger.new(STDOUT)
-      failures_logger.error({ status: "Failed to write data to #{logstash_host}:#{logstash_port}",  exception: e, data: data })
     end
 
     def environment

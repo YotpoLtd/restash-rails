@@ -28,9 +28,10 @@ module Resque
       end
 
       def log(log_message, args, severity = :info)
-        log_arguments = { log_message: log_message, extra_data: args, class: self.name, log_tag: :resque_hooks }
-        if args.is_a?(Array) && args[0].is_a?(Exception)
-          exception = args.shift
+        extra_data = args.is_a?(Array) ? args.last : args
+        log_arguments = { log_message: log_message, extra_data: extra_data, class: self.name, log_tag: :resque_hooks }
+        if args.is_a?(Array) && args.first.is_a?(Exception)
+          exception = args.first
           log_arguments[:exception] = { class: exception.class.to_s, message: exception.message.to_s, backtrace: exception.backtrace }
         end
         log_arguments[:exec_run_time] = @job_end_time - @job_start_time if @job_start_time.present? && @job_end_time.present?

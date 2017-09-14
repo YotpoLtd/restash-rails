@@ -11,7 +11,7 @@ module RestashRails
       @logstash_host = configs[:host] || '127.0.0.1' #logstash host
       @logstash_port = configs[:port].to_i || 5960 #logstash port
       @app_name = configs[:app_name] || ENV['APP_NAME'] || Rails.application.class.name
-      @output_type = configs[:output_type] || 'tcp'
+      @output_type = (configs[:output_type] || 'tcp').to_s.downcase
       #TCP connection timeouts in milliseconds
       if configs[:timeout_options].present?
         configs[:timeout_options].each{ |k,v| configs[:timeout_options][k] = v.to_f }
@@ -64,6 +64,7 @@ module RestashRails
       log_message[:severity] = severity
       log_message[:app_name] = app_name
       log_message[:rails_env] = environment
+      log_message[:output_type] = @output_type
       log_message.merge!(formatter.format_message(message))
       log_message = log_message.with_indifferent_access
       log_message[:log_tag] ||= :custom
@@ -77,7 +78,7 @@ module RestashRails
 
     def write(data)
       json_data = data.to_json
-      case @output_type.downcase
+      case @output_type
         when 'tcp'
           write_to_tcp(json_data)
         when 'stdout'

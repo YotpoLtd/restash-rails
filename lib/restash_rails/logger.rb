@@ -1,9 +1,11 @@
 require 'tcp_timeout'
+require 'restash_rails/tcp_buffered_logger'
 
 module RestashRails
   class Logger
     include ::Logger::Severity
-    attr_accessor :app_name, :level, :outputter, :formatter, :logstash_host, :logstash_port, :timeout_options, :output_type
+    attr_accessor :app_name, :level, :outputter, :formatter, :logstash_host, :logstash_port, :timeout_options,
+                  :output_type, :buffer_length, :buffer_timeout
     DEFAULT_TIMEOUT = 0.010
 
     def initialize(configs)
@@ -12,6 +14,8 @@ module RestashRails
       @logstash_port = configs[:port].to_i || 5960 #logstash port
       @app_name = configs[:app_name] || ENV['APP_NAME'] || Rails.application.class.name
       @output_type = (configs[:output_type] || 'tcp').to_s.downcase
+      @buffer_length = (configs[:buffer_length] || 10000).to_i
+      @buffer_timeout = (configs[:buffer_timeout] || 60).to_i
       #TCP connection timeouts in milliseconds
       if configs[:timeout_options].present?
         configs[:timeout_options].each{ |k,v| configs[:timeout_options][k] = v.to_f }
@@ -21,6 +25,9 @@ module RestashRails
       end
       set_formatter(configs)
       @stdout_logger = ::Logger.new(STDOUT)
+      @tcp_buffered_logger = TcpBufferedLogger.new(@logstash_host, @logstash_port, @timeout_options,
+                                                   @buffer_length, @buffer_timeout)
+
     end
 
     ::Logger::Severity.constants.each do |severity|
@@ -83,9 +90,15 @@ module RestashRails
           write_to_tcp(json_data)
         when 'stdout'
           write_to_stdout(json_data, data[:severity].downcase)
+        when 'buffered_tcp'
+          write_to_tcp_buffer(json_data)
       end
     rescue => e
       @stdout_logger.error({ status: "Failed to write data to #{logstash_host}:#{logstash_port}",  exception: e, data: data })
+    end
+
+    def write_to_tcp_buffer(json_data)
+      @tcp_buffered_logger.write(json_data)
     end
 
     def write_to_stdout(json_data, severity)

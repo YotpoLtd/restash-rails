@@ -21,6 +21,9 @@ module RestashRails
       end
       set_formatter(configs)
       @stdout_logger = ::Logger.new(STDOUT)
+      @stdout_logger.formatter = proc do |severity, datetime, progname, msg|
+        "#{msg}\n"
+      end
     end
 
     ::Logger::Severity.constants.each do |severity|

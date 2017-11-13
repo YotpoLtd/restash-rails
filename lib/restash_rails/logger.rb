@@ -67,7 +67,7 @@ module RestashRails
       log_message[:severity] = severity
       log_message[:app_name] = app_name
       log_message[:rails_env] = environment
-      log_message[:output_type] = @output_type
+      log_message[:output_type] ||= @output_type
       log_message.merge!(formatter.format_message(message))
       log_message = log_message.with_indifferent_access
       log_message[:log_tag] ||= :custom
@@ -81,7 +81,7 @@ module RestashRails
 
     def write(data)
       json_data = data.to_json
-      case @output_type
+      case data[:output_type]
         when 'tcp'
           write_to_tcp(json_data)
         when 'stdout'

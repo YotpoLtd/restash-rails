@@ -5,12 +5,12 @@ module Resque
       def before_perform_logstash_logger(*args)
         @resque_job_uuid = SecureRandom.uuid
         @job_start_time = Time.now
-        log 'Executing', args
+        log 'Executing', args, :debug
       end
 
       def after_perform_logstash_logger(*args)
         @job_end_time = Time.now
-        log 'Finished', args
+        log 'Finished', args, :debug
       end
 
       def on_failure_logstash_logger(*args)
@@ -20,11 +20,11 @@ module Resque
 
       # Executed on the enqueueing instance
       def after_enqueue_logstash_logger(*args)
-        log 'Enqueued', args
+        log 'Enqueued', args, :debug
       end
 
       def after_schedule_send_monitor_data(*args)
-        log 'Scheduled', args
+        log 'Scheduled', args, :debug
       end
 
       def log(log_message, args, severity = :info)

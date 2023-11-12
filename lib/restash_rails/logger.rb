@@ -52,6 +52,13 @@ module RestashRails
         return  @level = class_eval(desired_level)
       end
     end
+
+    def log_level_allowed?(level, min_level)
+      return level >= min_level if level.is_a?(Integer) && min_level.is_a?(Integer)
+      min_level_int = min_level.is_a?(Integer) ? min_level : class_eval(min_level.to_s.upcase)
+      level_int = level.is_a?(Integer) ? level : class_eval(level.to_s.upcase)
+      level_int >= min_level_int
+    end
     
     private
 
